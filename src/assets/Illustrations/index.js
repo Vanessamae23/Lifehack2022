@@ -11,5 +11,7 @@ import Clock from './clock.png'
 import Calendar from './calendar.png'
 import Notes from './notepad.png'
 import Profile from './cooking.png'
+import Gallery from './gallery.png'
+import Camera from './camera.png'
 
-export { Logo, Nothing, Clock, Calendar, Notes, Tick, Bottle, HomePage, Profile, BMT, Helping, Item, Cross }
+export { Logo, Nothing, Gallery, Camera, Clock, Calendar, Notes, Tick, Bottle, HomePage, Profile, BMT, Helping, Item, Cross }
