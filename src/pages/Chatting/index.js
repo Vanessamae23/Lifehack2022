@@ -8,13 +8,15 @@ import { Firebase } from '../../config'
 
 const Chatting = ({navigation, route}) => {
   const mentorData = route.params;
+  
   const [ chatContent, setChatContent ] = useState("")
   const [user, setUser] = useState({})
   const [chatData, setChatData] = useState([])
   const scrollViewRef = useRef();
   useEffect(() => {
+    console.log(mentorData)
     getDataUserFromLocal();
-    Firebase.database().ref(`chatting/${user.uid}_${mentorData.data.uid}/allChat/`).on('value', (snapshot) => {
+    Firebase.database().ref(`chatting/${user.uid}_${mentorData.user}/allChat/`).on('value', (snapshot) => {
 
       if(snapshot.val()) {
         const dataSnapshot = snapshot.val();
@@ -36,7 +38,7 @@ const Chatting = ({navigation, route}) => {
         setChatData(allDataChat)
       }
     })
-  }, [user.uid, mentorData.data.uid])
+  }, [user.uid, mentorData.user])
 
   const getDataUserFromLocal = () => {
     getData('user').then(res => {
@@ -55,14 +57,14 @@ const Chatting = ({navigation, route}) => {
       chatTime: getChatTime(today),
       chatContent: chatContent
     }
-    const chatID = `${user.uid}_${mentorData.data.uid}`
-    const oppID = `${mentorData.data.uid}_${user.uid}`
+    const chatID = `${user.uid}_${mentorData.user}`
+    const oppID = `${mentorData.user}_${user.uid}`
     const urlMessageUser = `messages/${user.uid}/${chatID}`
-    const urlMessageMentor = `messages/${mentorData.data.uid}/${chatID}`
+    const urlMessageMentor = `messages/${mentorData.user}/${chatID}`
     const dataHistoryChatForUser = {
       lastContentChat: chatContent,
       lastChatDate: today.getTime(),
-      uidPartner: mentorData.data.uid
+      uidPartner: mentorData.user
   }
   const dataHistoryChatForMentor = {
     lastContentChat: chatContent,
@@ -89,9 +91,8 @@ Firebase.database().ref(`chatting/${oppID}/allChat/${setDateChat(today)}/`).push
   return (
     <View style={styles.page}>
       <Header
-      subtitle={mentorData.data.roles}
       onBack={true}
-        title={mentorData.data.fullName}
+        title={mentorData.food}
         onPress={() => navigation.goBack()}
       />
       <View style={styles.content}>

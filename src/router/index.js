@@ -1,7 +1,7 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import {SplashScreen, Login,  Home, ForgotPassword, Register,  Calendar,  Chatting,  ChooseMentor, ImageIdentifier, RemainingBites } from '../pages';
+import {SplashScreen, Login,  Home, AddFood, Messages, ForgotPassword, Register,  Calendar,  Chatting,  ChooseMentor, ImageIdentifier, RemainingBites } from '../pages';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BottomNavigator } from '../components';
@@ -18,6 +18,7 @@ const MainApp = () => {
       <Tab.Screen name="Store"  component={Calendar}/>
       <Tab.Screen name="Bites"  component={RemainingBites}/>
       <Tab.Screen name="AI"  component={ImageIdentifier}/>
+      <Tab.Screen name="Messages"  component={Messages}/>
     </Tab.Navigator>
   )
 }
@@ -53,6 +54,16 @@ const Router = () => {
       <Stack.Screen
         name="Calendar"
         component={Calendar}
+        options={{headerShown: false}}
+      />
+        <Stack.Screen
+        name="Messages"
+        component={Messages}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddFood"
+        component={AddFood}
         options={{headerShown: false}}
       />
       <Stack.Screen
