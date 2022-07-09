@@ -13,3 +13,8 @@ export const setDateChat = (today) => {
     const date = today.getDate();
     return `${year}-${month}-${date}`
 } 
+
+// export const formatDate = (date) => {
+//     const data = date.split('-');
+//     return Date.parse()
+// }

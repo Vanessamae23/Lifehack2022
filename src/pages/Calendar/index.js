@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {Button, CardNews, Gap, Input} from '../../components';
 import {useDispatch} from 'react-redux';
-import {showSuccess, useForm} from '../../utils';
+import {showError, showSuccess, useForm} from '../../utils';
 import {Firebase} from '../../config';
 import {getData} from '../../utils/localStorage';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -22,18 +22,18 @@ const Calendar = ({navigation}) => {
   const [change, setChange] = useState(false);
   const [item, setItem] = useState([]);
 
-  const getDataUserFromLocal = async () => {
-    await getData('user').then(res => {
+  const getDataUserFromLocal = () => {
+     getData('user').then(res => {
       const data = res;
       setUser(data);
     });
   };
 
-  useEffect(() => {
+  useEffect( () => {
     getDataUserFromLocal();
     Firebase.database()
       .ref(`store/${user.uid}/`)
-      .orderByChild('end')
+      .orderByChild('endDate')
       .once('value')
       .then(res => {
         if (res.val()) {
@@ -50,15 +50,21 @@ const Calendar = ({navigation}) => {
           setItem(array);
         }
       });
-  }, [change]);
+  }, [user.uid, change]);
 
   const onAdd = () => {
     getDataUserFromLocal();
+    if(isNaN(Date.parse(form.end))) {
+      showError('Invalid date');
+      return;
+    }
     const data = {
       food: form.food,
       start: form.start,
       end: form.end,
+      endDate: Date.parse(form.end)
     };
+    console.log(data)
     Firebase.database()
       .ref(`store/${user.uid}`)
       .push(data)
@@ -130,7 +136,7 @@ const Calendar = ({navigation}) => {
                     onDate={true}
                     value={form.start}
                     onChangeText={value => setForm('start', value)}
-                    placeholder="DD-MM-YYYY"
+                    placeholder="YYYY-MM-DD"
                   />
                   <Gap height={16} />
                   <Input
@@ -138,7 +144,7 @@ const Calendar = ({navigation}) => {
                     onDate={true}
                     value={form.end}
                     onChangeText={value => setForm('end', value)}
-                    placeholder="DD-MM-YYYY"
+                    placeholder="YYYY-MM-DD"
                   />
                   <Gap height={120} />
                   <Pressable
