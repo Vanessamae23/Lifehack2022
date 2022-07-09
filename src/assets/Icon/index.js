@@ -14,5 +14,6 @@ import ICItem from './item.svg'
 import ICCalendar from './calendar.svg'
 import ICArrow from './arrowRight.svg'
 import ICBook from './book.svg'
+import ICFood from './food.svg'
 
-export { Back, ICBook, ICCalendar, ICArrow, ICTent, Icon, ICItem, ICBuddies, ICSergeant, ICCounsellor, IconNext, IconDropdown, IconBackDark, IconSendDark, IconSendLight, IconBackLight }
+export { Back, ICFood, ICBook, ICCalendar, ICArrow, ICTent, Icon, ICItem, ICBuddies, ICSergeant, ICCounsellor, IconNext, IconDropdown, IconBackDark, IconSendDark, IconSendLight, IconBackLight }
