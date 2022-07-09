@@ -2,10 +2,23 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { BMT, Profile } from '../../../assets'
 
-const CardNews = ({food, onPress, start, end, uri}) => {
+const CardNews = ({food, onPress, onLongPress, start, end, uri}) => {
 
+    const getDate=(days)=>{
+          var date = new Date();
+          date.setDate(date.getDate() + days);
+          var day = date.getDate();
+          var month = date.getMonth() + 1;
+          var year = date.getFullYear();
+          var monthPaddingZero = (month > 9) ? '' : '0';
+          var dayPaddingZero = (day > 9) ? '' : '0';
+
+          //Alert.alert(date + '-' + month + '-' + year);
+          // You can turn it in to your desired format
+          return year + '-' + monthPaddingZero + month + '-' + dayPaddingZero + day;//format: dd-mm-yyyy;
+    }
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={styles.card}>
+    <TouchableOpacity onPress={onPress} onLongPress={onLongPress} activeOpacity={0.8} style={{...styles.card, backgroundColor : end==getDate(0)?'#FF0000':'#D08770'}}>
         <Image  source={Profile} style={styles.image} />
         <View>
             <Text style={styles.title}>{food}</Text>

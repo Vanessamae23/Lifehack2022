@@ -7,6 +7,7 @@ import {
   Pressable,
   View,
   Dimensions,
+  RefreshControl,
 } from 'react-native';
 import {Button, CardNews, Gap, Input} from '../../components';
 import {useDispatch} from 'react-redux';
@@ -14,6 +15,7 @@ import {showError, showSuccess, useForm} from '../../utils';
 import {Firebase} from '../../config';
 import {getData} from '../../utils/localStorage';
 import {ScrollView} from 'react-native-gesture-handler';
+import StoreAddModal from '../StoreAddModal';
 
 const Calendar = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -29,8 +31,7 @@ const Calendar = ({navigation}) => {
     });
   };
 
-  useEffect( () => {
-    getDataUserFromLocal();
+  const loadData = () => {
     Firebase.database()
       .ref(`store/${user.uid}/`)
       .orderByChild('endDate')
@@ -50,40 +51,19 @@ const Calendar = ({navigation}) => {
           setItem(array);
         }
       });
-  }, [user.uid, change]);
-
-  const onAdd = () => {
-    getDataUserFromLocal();
-    if(isNaN(Date.parse(form.end))) {
-      showError('Invalid date');
-      return;
-    }
-    const data = {
-      food: form.food,
-      start: form.start,
-      end: form.end,
-      endDate: Date.parse(form.end)
-    };
-    console.log(data)
-    Firebase.database()
-      .ref(`store/${user.uid}`)
-      .push(data)
-      .then(res => {
-        showSuccess('Successfully added');
-        setForm('reset');
-      })
-      .catch(err => {
-        showError(err.message);
-      });
-
-    setChange(!change);
   };
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    loadData();
+    setRefreshing(false);
+  }, []);
+  
+  useEffect( () =>{
+    getDataUserFromLocal();
+    loadData();
+    }, [user.uid, change]);
 
-  const [form, setForm] = useForm({
-    food: '',
-    start: '',
-    end: '',
-  });
   return (
     <View
       style={{
@@ -98,7 +78,12 @@ const Calendar = ({navigation}) => {
         </Text>
       </View>
 
-      <ScrollView style={{height: '100%', paddingBottom : 10}}>
+      <ScrollView style={{height: '100%', paddingBottom : 10}} refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />}
+          >
         <View style={styles.container}>
           <View style={styles.scrollStyle}>
             {item.map((result, index) => {
@@ -108,60 +93,25 @@ const Calendar = ({navigation}) => {
                   food={result.food}
                   start={result.start}
                   end={result.end}
+                  onLongPress={()=>{
+                    item.splice(index,1)
+                      Firebase.database()
+                      .ref(`store/${user.uid}`)
+                      .set(item)
+                      .then(res => {
+                        showSuccess('Successfully Deleted');
+                        loadData();
+                      })
+                      .catch(err => {
+                        showError(err.message);
+                      });
+                    }}
                 />
               );
             })}
 
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
-                setModalVisible(!modalVisible);
-              }}>
-              <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                  <Text style={styles.modalText}>Add Food</Text>
-                  <Gap height={16} />
-                  <Input
-                    onDate={true}
-                    label="Food"
-                    value={form.food}
-                    onChangeText={value => setForm('food', value)}
-                    placeholder="Type your food"
-                  />
-                  <Gap height={16} />
-                  <Input
-                    label="Purchase Date"
-                    onDate={true}
-                    value={form.start}
-                    onChangeText={value => setForm('start', value)}
-                    placeholder="YYYY-MM-DD"
-                  />
-                  <Gap height={16} />
-                  <Input
-                    label="Expiry Date"
-                    onDate={true}
-                    value={form.end}
-                    onChangeText={value => setForm('end', value)}
-                    placeholder="YYYY-MM-DD"
-                  />
-                  <Gap height={120} />
-                  <Pressable
-                    style={[styles.button, styles.buttonClose]}
-                    onPress={onAdd}>
-                    <Text style={styles.textStyle1}>Add Food</Text>
-                  </Pressable>
-
-                  <Pressable
-                    style={[styles.button, styles.buttonClose]}
-                    onPress={() => setModalVisible(!modalVisible)}>
-                    <Text style={styles.textStyle1}>Close</Text>
-                  </Pressable>
-                </View>
-              </View>
-            </Modal>
+            <StoreAddModal user={user} modalVisible={modalVisible} setModalVisible={setModalVisible} change={change} setChange={setChange}/>
+            
           </View>
           <View style={styles.bottomView}>
             <Pressable
