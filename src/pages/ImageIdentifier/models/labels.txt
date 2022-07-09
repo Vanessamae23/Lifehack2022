@@ -1,0 +1,2 @@
+0 Rotten
+1 Fresh
