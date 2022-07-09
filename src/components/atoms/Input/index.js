@@ -6,12 +6,28 @@ const Input = ({
   label,
   placeholder,
   onNumber,
+  onDate,
   onChangeText,
   secureTextEntry,
   value,
 }) => {
 
   if (onNumber) {
+    return (
+      <View>
+        <Text style={styles.label}>{label}</Text>
+        <TextInput
+          style={styles.input}
+          placeholder={placeholder}
+          keyboardType="numbers-and-punctuation"
+          secureTextEntry={secureTextEntry}
+          value={value}
+          onChangeText={onChangeText}
+        />
+      </View>
+    );
+  }
+  if (onDate) {
     return (
       <View>
         <Text style={styles.label}>{label}</Text>

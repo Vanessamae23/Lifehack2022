@@ -24,7 +24,7 @@ const MainApp = () => {
 const Router = () => {
   return (
     <Stack.Navigator>
-      {/* <Stack.Screen
+      <Stack.Screen
         name="SplashScreen"
         component={SplashScreen}
         options={{headerShown: false}}
@@ -33,12 +33,12 @@ const Router = () => {
         name="Login"
         component={Login}
         options={{headerShown: false}}
-      /> */}
-      {/* <Stack.Screen
+      /> 
+       <Stack.Screen
         name="Register"
         component={Register}
         options={{headerShown: false}}
-      />  */}
+      /> 
       <Stack.Screen
         name="MainApp"
         component={MainApp}
