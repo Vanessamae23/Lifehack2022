@@ -7,9 +7,9 @@ import Chatting from "./Chatting";
 import Calendar from "./Calendar";
 import ForgotPassword from "./ForgotPassword";
 import ImageIdentifier from "./ImageIdentifier";
+import RemainingBites from "./RemainingBites";
 
 
-
-export { SplashScreen, ImageIdentifier, ForgotPassword, Login, Register, Home, ChooseMentor, Chatting, Calendar }
+export { SplashScreen, ImageIdentifier, ForgotPassword, Login, Register, Home, ChooseMentor, Chatting, Calendar, RemainingBites }
 
 
