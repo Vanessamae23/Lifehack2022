@@ -27,6 +27,7 @@ let tfliteMobilenet = new Tflite();
 
 const ImageIdentifier = ({navigation}) => {
 
+const [rottenCount, setRottenCount] = useState(0);
   const [change, setChange] = useState(false);
   const [result, setResult] = useState([])
   const [rotten, isRotten] = useState('')
@@ -69,7 +70,8 @@ const ImageIdentifier = ({navigation}) => {
   const showResult = (result) => {
     const rotten = result[0]['confidence'];
     const label = result[0]['label'];
-    console.log(result);
+    console.log("RR"+result);
+    if (label.includes("Rotten")){setRottenCount(rottenCount+1);}
     isRotten(label)
   }
 
@@ -226,6 +228,8 @@ const handlePressCamera = async () => {
               {/*</View>*/}
         </Modal>
       <Text style={{fontSize: 30, fontWeight: 'bold', color: 'black'}}>Check Food Quality</Text>
+      {rottenCount > 0 ? <Text style={{fontSize: 15, fontWeight: 'bold', color: 'red'}}>You have been wasting too much food recently</Text>:
+          <Text style={{fontSize: 15, fontWeight: 'normal', color: 'black'}}>Good job! You have reduced wastage</Text>}
       
       <View style={{flexDirection: 'row', width: Dimensions.get('window').width-40, justifyContent: 'center'}}>
           <TouchableOpacity style={styles.button} onPress={handlePress}>
