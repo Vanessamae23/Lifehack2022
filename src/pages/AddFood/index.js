@@ -7,13 +7,14 @@ import { Firebase } from '../../config';
 import { showError, showSuccess, useForm } from '../../utils';
 import { getData } from '../../utils/localStorage';
 
-const AddFood = ({navigation}) => {
+const AddFood = ({route, navigation}) => {
 
+    const {foodType, endDate} = route.params;
     const dispatch = useDispatch();
     const [user, setUser] = useState('');
     const [form, setForm] = useForm({
-        food: '',
-        expiry: '',
+        food: foodType ? foodType : '',
+        expiry: endDate ? endDate : '',
         address: '',
         detail: '',
         user: '',

@@ -6,26 +6,53 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
+  TextInput,
   Image,
   View,
   Dimensions,
 } from 'react-native';
 import { Gallery, Camera } from '../../assets';
 import { Icon, ICTent, ICItem, ICCalendar, ICBook, ICFood } from '../../assets/Icon';
-
+import { Alert, Modal } from "react-native";
 import Tflite from 'tflite-react-native';
 import * as ImagePicker from "react-native-image-picker"
-import { Gap } from '../../components';
+import { Header, Button, Gap } from '../../components';
+import StoreAddModal from '../StoreAddModal';
+import { Firebase } from '../../config'
+import { HomeProfile } from '../../components'
+
 let tflite = new Tflite();
 let tfliteMobilenet = new Tflite();
 
 
-const ImageIdentifier = () => {
+const ImageIdentifier = ({navigation}) => {
 
+const [rottenCount, setRottenCount] = useState(0);
+  const [change, setChange] = useState(false);
   const [result, setResult] = useState([])
   const [rotten, isRotten] = useState('')
   const [path, setPath] = useState('')
   const [foodType, setFoodType] = useState('')
+  const [modal, setModal] = useState(false)
+  const popUp = () => {
+    setModal(!modal);
+  }
+  
+  
+  const Logout = () => {
+    Firebase.auth().signOut().then(() => {
+      navigation.replace('SplashScreen')
+    }).catch(e => {
+      showMessage({
+        message: e.message,
+        type: 'default',
+        backgroundColor: colors.error,
+        color: colors.white
+      })
+    })
+  }
+
+
   tflite.loadModel({
     model: 'model_unquant.tflite',// required
     labels: 'labels.txt',  // required
@@ -43,7 +70,8 @@ const ImageIdentifier = () => {
   const showResult = (result) => {
     const rotten = result[0]['confidence'];
     const label = result[0]['label'];
-    console.log(result);
+    console.log("RR"+result);
+    if (label.includes("Rotten")){setRottenCount(rottenCount+1);}
     isRotten(label)
   }
 
@@ -136,16 +164,73 @@ const handlePressCamera = async () => {
           console.log(res[0]['label']);
           setFoodType(res[0]['label']);
       });
+      setChange(!change);
   }
   
 
-   
-  
+   const expiry_dict = {"Granny Smith": 5, "banana": 5};
+    const getDate=(days)=>{
+          var date = new Date();
+          date.setDate(date.getDate() + days);
+          var day = date.getDate();
+          var month = date.getMonth() + 1;
+          var year = date.getFullYear();
+          var monthPaddingZero = (month > 9) ? '' : '0';
+          var dayPaddingZero = (day > 9) ? '' : '0';
 
+          //Alert.alert(date + '-' + month + '-' + year);
+          // You can turn it in to your desired format
+          return year + '-' + monthPaddingZero + month + '-' + dayPaddingZero + day;//format: dd-mm-yyyy;
+    }
+    const getExpiryDate=(text)=>{
+        return expiry_dict[text] == null ? getDate(30) : getDate(expiry_dict[text]);
+    };
+    
+  const [text, setText] = useState('');
+  const [exp, setExp] = useState('');
+  
+  const StoreModal = () => {
+      return (<StoreAddModal modalVisible={modal} setModalVisible={setModal} 
+            change={change} setChange={setChange} foodType={foodType} startDate={getDate(0)} endDate={getExpiryDate(foodType)}/>); 
+  }
+  
   return (
     <ScrollView style={{padding: 20}} >
+        <HomeProfile onPress={Logout} />
+        <StoreModal/>
+        <Modal animationType = {"slide"} transparent = {false} 
+               visible = {false}>
+               <View style={{width: "100%", height: "100%", backgroundColor: '#ffffff'}}>
+               <Header title="Store" subtitle="Keep track of expiry dates" onBack onPress={() => setModal(!modal)} />
+               <ScrollView>
+                 <Image source={{uri: path}} style={{height: 200, width: '100%'}} />
+                 <View style={{paddingLeft: 20, paddingRight: 25}}>
+                     <Text>FoodType</Text>
+                      <TextInput
+                        style={{height: 40}}
+                        placeholder="Type food here!"
+                        onChangeText={newText => setText(newText)}
+                        defaultValue={text}
+                      />
+                      <Text style={{padding: 10, fontSize: 42}}>
+                        {text.split(' ').map((word) => word && '🍕').join(' ')}
+                        {expiry_dict[text]}
+                        {getDate(expiry_dict[text])}
+                      </Text>
+                      <Text>Expiry</Text>
+                      <TextInput
+                        style={{height: 40}}
+                        onChangeText={newExp => setExp(exp)}
+                      />
+                  </View>
+                </ScrollView>
+              </View>
+              {/*</View>*/}
+        </Modal>
       <Text style={{fontSize: 30, fontWeight: 'bold', color: 'black'}}>Check Food Quality</Text>
-      <Gap height={20}/>
+      {rottenCount > 0 ? <Text style={{fontSize: 15, fontWeight: 'bold', color: 'red'}}>You have been wasting too much food recently</Text>:
+          <Text style={{fontSize: 15, fontWeight: 'normal', color: 'black'}}>Good job! You have reduced wastage</Text>}
+      
       <View style={{flexDirection: 'row', width: Dimensions.get('window').width-40, justifyContent: 'center'}}>
           <TouchableOpacity style={styles.button} onPress={handlePress}>
             <Image source={Gallery} style={styles.image} />
@@ -159,24 +244,31 @@ const handlePressCamera = async () => {
           </TouchableOpacity>
       </View>
       
+      {path ? 
+          <View style={{flexDirection: 'row', width: Dimensions.get('window').width-40, justifyContent: 'center'}}>
+            <Image source={{uri: path}} style={styles.imageContainer} />
+          </View> : null}  
+       
       <View style={{flexDirection: 'row', width: Dimensions.get('window').width-40, justifyContent: 'center'}}>
       <View style={styles.card}>
         <Text style={{fontSize: 25, fontWeight: 'bold', color: 'black', textAlign: 'center'}} >Food Condition</Text>
-        {path ? <Image source={{uri: path}} style={styles.imageContainer} /> : <View></View>}        
-        <Text style={{fontSize: 20, fontWeight: 'bold', color: 'black', textAlign: 'center'}}> {rotten ? rotten.split(' ')[1] :"-"}</Text> 
-        <Text style={{fontSize: 20, fontWeight: 'bold', color: 'black', textAlign: 'center'}}>  {foodType ? foodType :"Unknown Type"} </Text>
+    
+        <Text style={{fontSize: 15, fontWeight: 'normal', color: 'black', textAlign: 'center'}}> {"Is Rotten?: "}<Text style={{fontWeight: 'bold'}}>{rotten ? rotten.split(' ')[1] :"-"}</Text></Text> 
+        <Text style={{fontSize: 15, fontWeight: 'normal', color: 'black', textAlign: 'center'}}>  {"Type: "+(foodType ? foodType :"-")} </Text>
+        <Text style={{fontSize: 15, fontWeight: 'normal', color: 'black', textAlign: 'center'}}>  {"Expiry (Food Type): " + (path ? getExpiryDate(foodType): '-')}</Text>
+        <Text style={{fontSize: 15, fontWeight: 'normal', color: 'black', textAlign: 'center'}}> </Text>
         <Text style={{fontSize: 15,  color: 'black', textAlign: 'center',}}>If it is still fresh, please consider eating it now, storing it to keep it still fresh or give it to others</Text>
       </View>
       </View>
     
      {path ? <View style={{flexDirection: 'row', width: Dimensions.get('window').width-40, justifyContent: 'center'}}>
-          <TouchableOpacity style={styles.button} onPress={handlePress}>
+          <TouchableOpacity style={styles.button} onPress={popUp}>
             <ICCalendar style={styles.image} />
             <Gap height={20}/>
             <Text>Store</Text>
           </TouchableOpacity>
           
-          <TouchableOpacity  style={styles.button} onPress={handlePressCamera}>
+          <TouchableOpacity  style={styles.button} onPress={() => navigation.navigate('AddFood', {foodType, 'endDate': getExpiryDate(foodType)})}>
           <ICFood style={{width: 70, height:"100%"}} />
           <Gap height={20}/>
             <Text>Share with others</Text>
@@ -232,8 +324,11 @@ const styles = StyleSheet.create({
     margin: "auto"
   },
   imageContainer: {
-    width: 280,
-    height: 280,
+    width: '95%',
+    height: 300,
+    elevation: 10,
+    padding: 30,
+    borderRadius: 10
   },
 });
 

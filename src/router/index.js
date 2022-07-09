@@ -14,10 +14,10 @@ const MainApp = () => {
     <Tab.Navigator  screenOptions={{
       headerShown: false
     }} tabBar={props => <BottomNavigator {...props} />}>
-      <Tab.Screen name="Home" component={Home}/>
+      <Tab.Screen name="Home" component={ImageIdentifier}/>
       <Tab.Screen name="Store"  component={Calendar}/>
       <Tab.Screen name="Bites"  component={RemainingBites}/>
-      <Tab.Screen name="AI"  component={ImageIdentifier}/>
+      {/*<Tab.Screen name="AI"  component={ImageIdentifier}/>*/}
       <Tab.Screen name="Messages"  component={Messages}/>
     </Tab.Navigator>
   )
