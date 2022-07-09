@@ -8,8 +8,10 @@ import Calendar from "./Calendar";
 import ForgotPassword from "./ForgotPassword";
 import ImageIdentifier from "./ImageIdentifier";
 import RemainingBites from "./RemainingBites";
+import AddFood from './AddFood'
+import Messages from './Messages'
 
 
-export { SplashScreen, ImageIdentifier, ForgotPassword, Login, Register, Home, ChooseMentor, Chatting, Calendar, RemainingBites }
+export { SplashScreen, Messages, AddFood, ImageIdentifier, ForgotPassword, Login, Register, Home, ChooseMentor, Chatting, Calendar, RemainingBites }
 
 
