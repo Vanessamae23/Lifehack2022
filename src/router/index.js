@@ -15,7 +15,7 @@ const MainApp = () => {
       headerShown: false
     }} tabBar={props => <BottomNavigator {...props} />}>
       <Tab.Screen name="Home" component={Home}/>
-      <Tab.Screen name="Calendar"  component={Calendar}/>
+      <Tab.Screen name="Store"  component={Calendar}/>
       <Tab.Screen name="AI"  component={ImageIdentifier}/>
     </Tab.Navigator>
   )

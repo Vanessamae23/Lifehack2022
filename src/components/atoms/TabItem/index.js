@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { Icon, ICTent, ICItem, ICCalendar, ICBook } from '../../../assets/Icon'
+import { Icon, ICTent, ICItem, ICCalendar, ICBook, ICFood } from '../../../assets/Icon'
 
 const TabItem = ({title, active, onPress, onLongPress}) => {
 
@@ -8,10 +8,10 @@ const TabItem = ({title, active, onPress, onLongPress}) => {
         if(title === 'Home') {
             return <ICTent />
         }
-        if(title === 'Items') {
-            return <ICItem/>
+        if(title === 'AI') {
+            return <ICFood/>
         }
-        if(title === 'Calendar') {
+        if(title === 'Store') {
             return <ICCalendar />
         }
         if(title === 'Guides') {
