@@ -22,8 +22,8 @@ const Calendar = ({navigation}) => {
   const [change, setChange] = useState(false);
   const [item, setItem] = useState([]);
 
-  const getDataUserFromLocal = () => {
-    getData('user').then(res => {
+  const getDataUserFromLocal = async () => {
+    await getData('user').then(res => {
       const data = res;
       setUser(data);
     });
@@ -33,6 +33,7 @@ const Calendar = ({navigation}) => {
     getDataUserFromLocal();
     Firebase.database()
       .ref(`store/${user.uid}/`)
+      .orderByChild('end')
       .once('value')
       .then(res => {
         if (res.val()) {
@@ -47,7 +48,6 @@ const Calendar = ({navigation}) => {
             array.push(answer);
           });
           setItem(array);
-          console.log(item);
         }
       });
   }, [change]);
@@ -96,7 +96,6 @@ const Calendar = ({navigation}) => {
         <View style={styles.container}>
           <View style={styles.scrollStyle}>
             {item.map((result, index) => {
-              console.log(item);
               return (
                 <CardNews
                   key={index}

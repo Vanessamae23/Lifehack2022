@@ -1,15 +1,24 @@
 import { StyleSheet, Text, View, Image } from 'react-native'
 import React, {useEffect} from 'react'
 import { Logo } from '../../assets/Illustrations'
+import { Firebase } from '../../config'
 
 const SplashScreen = ({navigation}) => {
 
     useEffect(() => {
-        setTimeout(() => {
-            navigation.replace('Login');
-        }, 2000)
-      
-      }, [])
+        const unsubscribe = Firebase.auth().onAuthStateChanged(user => {
+          setTimeout(() => {
+            if (user) {
+              navigation.replace('MainApp');
+            } else {
+              navigation.replace('Login');
+            }
+          }, 3000);
+          });
+        
+    
+        return () => unsubscribe()
+      }, [navigation]);
 
   return (
     <View style={styles.container}>
