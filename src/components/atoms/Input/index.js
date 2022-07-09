@@ -17,7 +17,8 @@ const Input = ({
       <View>
         <Text style={styles.label}>{label}</Text>
         <TextInput
-          style={styles.input}
+
+          
           placeholder={placeholder}
           keyboardType="numbers-and-punctuation"
           secureTextEntry={secureTextEntry}
@@ -32,9 +33,8 @@ const Input = ({
       <View>
         <Text style={styles.label}>{label}</Text>
         <TextInput
-          style={styles.input}
+         style={styles.input1}
           placeholder={placeholder}
-          keyboardType="number-pad"
           secureTextEntry={secureTextEntry}
           value={value}
           onChangeText={onChangeText}
@@ -63,10 +63,18 @@ const styles = StyleSheet.create({
     color: 'black',
     marginBottom: 10,
   },
-  input: {
+  input: {                                 
     borderWidth: 1,
-    borderColor: 'black',
-    borderRadius: 8,
-    padding: 10,
+    borderColor: 'black',           
+    borderRadius: 8,            
+    padding: 10,   
+    width: '100%'                                                                                                                                                                     
+  },
+  input1: {                                 
+    borderWidth: 1,
+    borderColor: 'black',           
+    borderRadius: 8,            
+    padding: 10,   
+    width: 250                                                                                                                                                                   
   },
 });

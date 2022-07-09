@@ -125,6 +125,7 @@ const Calendar = ({navigation}) => {
                   <Text style={styles.modalText}>Add Food</Text>
                   <Gap height={16} />
                   <Input
+                    onDate={true}
                     label="Food"
                     value={form.food}
                     onChangeText={value => setForm('food', value)}
@@ -207,7 +208,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height - 40,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    paddingVertical: 35,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
