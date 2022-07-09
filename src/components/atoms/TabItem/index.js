@@ -11,6 +11,9 @@ const TabItem = ({title, active, onPress, onLongPress}) => {
         if(title === 'AI') {
             return <ICFood/>
         }
+        if(title === 'Bites') {
+            return <ICFood/>
+        }
         if(title === 'Store') {
             return <ICCalendar />
         }
