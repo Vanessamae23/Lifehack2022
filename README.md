@@ -1,4 +1,4 @@
-# Zero Waste
+# Zero Waste (by OneSky)
 
 ## Compile Instructions
 ```
